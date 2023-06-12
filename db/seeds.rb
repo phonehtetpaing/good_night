@@ -1,7 +1,9 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Examples:
-#
-#   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
-#   Character.create(name: "Luke", movie: movies.first)
+# Create users
+user1 = User.create(name: 'Ichigo Kurosaki')
+user2 = User.create(name: 'Sasuke Uchiha')
+
+# Create sleep records
+SleepRecord.create(start_time: Time.current - 8.hours, end_time: Time.current - 6.hours, user: user1)
+SleepRecord.create(start_time: Time.current - 7.hours, end_time: Time.current - 5.hours, user: user1)
+SleepRecord.create(start_time: Time.current - 6.hours, end_time: Time.current - 4.hours, user: user2)
+SleepRecord.create(start_time: Time.current - 5.hours, end_time: Time.current - 3.hours, user: user2)
