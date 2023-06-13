@@ -8,8 +8,9 @@ RSpec.describe 'Sleep Records API', type: :request do
       it 'creates a new sleep record' do
         sleep_record_params = { start_time: Time.current, end_time: Time.current + 8.hours }
 
-        post '/sleep_records/clock_in', params: { sleep_record: sleep_record_params }, headers: { 'Authorization' => "Bearer #{jwt_token}" }
-      
+        post '/sleep_records/clock_in', params: { sleep_record: sleep_record_params },
+                                        headers: { 'Authorization' => "Bearer #{jwt_token}" }
+
         expect(response).to have_http_status(:created)
         parsed_response = JSON.parse(response.body)
         expect(Time.parse(parsed_response['start_time']).strftime('%Y-%m-%dT%H:%M:%SZ')).to eq(sleep_record_params[:start_time].iso8601)
@@ -22,7 +23,8 @@ RSpec.describe 'Sleep Records API', type: :request do
       it 'returns validation errors' do
         invalid_sleep_record_params = { start_time: nil }
 
-        post '/sleep_records/clock_in', params: { sleep_record: invalid_sleep_record_params }, headers: { 'Authorization' => "Bearer #{jwt_token}" }
+        post '/sleep_records/clock_in', params: { sleep_record: invalid_sleep_record_params },
+                                        headers: { 'Authorization' => "Bearer #{jwt_token}" }
 
         expect(response).to have_http_status(:unprocessable_entity)
         parsed_response = JSON.parse(response.body)
@@ -37,7 +39,7 @@ RSpec.describe 'Sleep Records API', type: :request do
     let(:user) { create(:user) }
     let(:jwt_token) { JWT.encode({ user_id: user.id }, 'secret_key', 'HS256') }
     it 'returns all sleep records ordered by creation time' do
-      sleep_record1 = create(:sleep_record, created_at: 1.hour.ago,)
+      sleep_record1 = create(:sleep_record, created_at: 1.hour.ago)
       sleep_record2 = create(:sleep_record, created_at: 2.hours.ago)
 
       get '/sleep_records', headers: { 'Authorization' => "Bearer #{jwt_token}" }

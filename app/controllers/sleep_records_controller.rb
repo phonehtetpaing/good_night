@@ -21,5 +21,4 @@ class SleepRecordsController < ApplicationController
   def sleep_record_params
     params.require(:sleep_record).permit(:start_time, :end_time)
   end
-
 end
