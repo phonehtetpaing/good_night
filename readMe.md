@@ -10,32 +10,36 @@ The Good Night App is a sleep tracking application that allows users to track th
 
 ## Installation
 
-1. Clone the repository:
+1. Install Ruby 2.3.3: If you don't have Ruby 2.3.3 installed, you can use rbenv to install it. rbenv is a Ruby version management tool that allows you to easily switch between different Ruby versions. You can find more information and installation instructions for rbenv [here](https://github.com/rbenv/rbenv).
+
+   Once rbenv is installed, you can install Ruby 2.3.3 by running the following command:
+
+2. Clone the repository:
 
    ```bash
    git clone git@github.com:phonehtetpaing/good_night.git
    ```
 
-2. Install dependencies:
+3. Install dependencies:
 
    ```bash
    cd good-night
    bundle install
    ```
 
-3. Set up the database:
+4. Set up the database:
 
     ```bash
     rails db:setup
     ```
 
-4. Run database migrations:
+5. Run database migrations:
 
     ```bash
     rails db:migrate
     ```
 
-5. Seed the database with sample data:
+6. Seed the database with sample data:
 
     ```bash
     rails db:seed
