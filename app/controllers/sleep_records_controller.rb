@@ -2,7 +2,7 @@ class SleepRecordsController < ApplicationController
   include Authenticatable
 
   def index
-    sleep_records = SleepRecord.order(created_at: :asc)
+    sleep_records = SleepRecord.order(created_at: :desc)
     render json: sleep_records
   end
 
