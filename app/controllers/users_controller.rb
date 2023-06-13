@@ -8,29 +8,29 @@ class UsersController < ApplicationController
   def follow
     user = User.find_by(id: params[:id])
     if user.nil?
-      render json: { status: 'error', message: 'User to follow not found' }, status: :not_found
+      render_serialized_errors(404, 'User to follow not found')
     elsif @current_user.follow(user)
-      render json: { status: 'success', message: 'User followed' }, status: :ok
+      render json: { data: { status: 'success', message: 'User followed' } }, status: :ok
     else
-      render json: { status: 'error', message: 'User is already followed' }, status: :unprocessable_entity
+      render_serialized_errors(422, 'User is already followed')
     end
   end
 
   def unfollow
     user = User.find_by(id: params[:id])
     if user.nil?
-      render json: { status: 'error', message: 'User to unfollow not found' }, status: :not_found
+      render_serialized_errors(404, 'User to unfollow not found')
     elsif @current_user.unfollow(user)
-      render json: { status: 'success', message: 'User unfollowed' }, status: :ok
+      render json: { data: { status: 'success', message: 'User unfollowed' } }, status: :ok
     else
-      render json: { status: 'error', message: 'User is not followed' }, status: :unprocessable_entity
+      render_serialized_errors(422, 'User is not followed')
     end
   end
 
   def followed_sleep_records
     user = User.find_by(id: params[:id])
 
-    return render json: { error: 'User not found' }, status: :not_found if user.nil?
+    return render_serialized_errors(404, 'User not found') if user.nil?
 
     followed_users = user.following_users
     sleep_records = SleepRecord.where(user: followed_users)
@@ -43,5 +43,10 @@ class UsersController < ApplicationController
 
   def serialize_sleep_records(records)
     SleepRecordSerializer.new(records).serializable_hash.to_json
+  end
+
+  def render_serialized_errors(status, message)
+    error_string = ErrorSerializer.serialize(status:, message:)
+    render json: error_string, status:
   end
 end

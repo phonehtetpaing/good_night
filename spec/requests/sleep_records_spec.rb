@@ -1,7 +1,3 @@
-# frozen_string_literal: true
-
-require 'rails_helper'
-
 RSpec.describe 'Sleep Records API', type: :request do
   describe 'POST /sleep_records/clock_in' do
     let(:user) { create(:user) }
@@ -32,8 +28,8 @@ RSpec.describe 'Sleep Records API', type: :request do
 
         expect(response).to have_http_status(:unprocessable_entity)
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response['errors']['start_time']).to include("can't be blank")
-        expect(parsed_response['errors']['end_time']).to include("can't be blank")
+        expect(parsed_response['errors'][0]['detail']['start_time']).to eq(["can't be blank"])
+        expect(parsed_response['errors'][0]['detail']['end_time']).to eq(["can't be blank"])
         expect(SleepRecord.count).to eq(0)
       end
     end

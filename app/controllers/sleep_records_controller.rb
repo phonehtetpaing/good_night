@@ -16,7 +16,7 @@ class SleepRecordsController < ApplicationController
     if sleep_record.save
       render json: serialize_sleep_records(sleep_record), status: :created
     else
-      render json: { errors: sleep_record.errors }, status: :unprocessable_entity
+      render_unauthorized_error(422, sleep_record.errors)
     end
   end
 
@@ -27,6 +27,13 @@ class SleepRecordsController < ApplicationController
   end
 
   def serialize_sleep_records(records)
+    return [] unless records
+
     SleepRecordSerializer.new(records).serializable_hash.to_json
+  end
+
+  def render_unauthorized_error(status, message)
+    error_string = ErrorSerializer.serialize(status:, message:)
+    render json: error_string, status:
   end
 end

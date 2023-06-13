@@ -13,8 +13,7 @@ RSpec.describe UsersController, type: :request do
         post "/users/#{other_user.id}/follow", headers: { 'Authorization' => "Bearer #{jwt_token}" }
 
         expect(response).to have_http_status(:ok)
-        expect(response.parsed_body['status']).to eq('success')
-        expect(response.parsed_body['message']).to eq('User followed')
+        expect(response.parsed_body['data']['message']).to eq('User followed')
         expect(user.following?(other_user)).to be true
       end
     end
@@ -26,8 +25,7 @@ RSpec.describe UsersController, type: :request do
         post "/users/#{other_user.id}/follow", headers: { 'Authorization' => "Bearer #{jwt_token}" }
 
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.parsed_body['status']).to eq('error')
-        expect(response.parsed_body['message']).to eq('User is already followed')
+        expect(response.parsed_body['errors'][0]['detail']).to eq('User is already followed')
         expect(user.following?(other_user)).to be true
       end
 
@@ -35,8 +33,7 @@ RSpec.describe UsersController, type: :request do
         post '/users/999/follow', headers: { 'Authorization' => "Bearer #{jwt_token}" }
 
         expect(response).to have_http_status(:not_found)
-        expect(response.parsed_body['status']).to eq('error')
-        expect(response.parsed_body['message']).to eq('User to follow not found')
+        expect(response.parsed_body['errors'][0]['detail']).to eq('User to follow not found')
       end
     end
   end
@@ -53,8 +50,7 @@ RSpec.describe UsersController, type: :request do
         delete "/users/#{other_user.id}/unfollow", headers: { 'Authorization' => "Bearer #{jwt_token}" }
 
         expect(response).to have_http_status(:ok)
-        expect(response.parsed_body['status']).to eq('success')
-        expect(response.parsed_body['message']).to eq('User unfollowed')
+        expect(response.parsed_body['data']['message']).to eq('User unfollowed')
         expect(user.following?(other_user)).to be false
       end
     end
@@ -66,8 +62,7 @@ RSpec.describe UsersController, type: :request do
         delete "/users/#{other_user.id}/unfollow", headers: { 'Authorization' => "Bearer #{jwt_token}" }
 
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.parsed_body['status']).to eq('error')
-        expect(response.parsed_body['message']).to eq('User is not followed')
+        expect(response.parsed_body['errors'][0]['detail']).to eq('User is not followed')
         expect(user.following?(other_user)).to be false
       end
 
@@ -75,8 +70,7 @@ RSpec.describe UsersController, type: :request do
         delete '/users/999/unfollow', headers: { 'Authorization' => "Bearer #{jwt_token}" }
 
         expect(response).to have_http_status(:not_found)
-        expect(response.parsed_body['status']).to eq('error')
-        expect(response.parsed_body['message']).to eq('User to unfollow not found')
+        expect(response.parsed_body['errors'][0]['detail']).to eq('User to unfollow not found')
       end
     end
   end
@@ -113,7 +107,7 @@ RSpec.describe UsersController, type: :request do
         get '/users/999/followed_sleep_records', headers: { 'Authorization' => "Bearer #{jwt_token}" }
 
         expect(response).to have_http_status(:not_found)
-        expect(response.parsed_body['error']).to eq('User not found')
+        expect(response.parsed_body['errors'][0]['detail']).to eq('User not found')
       end
     end
 
