@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SleepRecord < ApplicationRecord
   validates :user_id, presence: true
   validates :start_time, presence: true
