@@ -13,6 +13,9 @@ The Good Night App is a sleep tracking application that allows users to track th
 1. Install Ruby 3.2.2: If you don't have Ruby 3.2.2 installed, you can use rbenv to install it. rbenv is a Ruby version management tool that allows you to easily switch between different Ruby versions. You can find more information and installation instructions for rbenv [here](https://github.com/rbenv/rbenv).
 
    Once rbenv is installed, you can install Ruby 3.2.2 by running the following command:
+   ```bash
+   rbenv install 3.2.2
+   ```
 
 2. Clone the repository:
 
