@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# The Authenticatable module provides authentication-related methods and helpers
+# for user authentication in controllers.
 module Authenticatable
   extend ActiveSupport::Concern
 

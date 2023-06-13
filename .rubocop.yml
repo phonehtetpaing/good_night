@@ -6,3 +6,8 @@ AllCops:
     - Gemfile
     - Rakefile
     - config.ru
+    - 'spec/**/*'
+
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'

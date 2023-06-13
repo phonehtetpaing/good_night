@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# UsersController handles user-related actions such as following/unfollowing other users
+# and retrieving sleep records of followed users.
 class UsersController < ApplicationController
   include Authenticatable
 

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# The SleepRecordsController handles requests related to sleep records.
+# It provides actions for creating and retrieving sleep records in descending order.
 class SleepRecordsController < ApplicationController
   include Authenticatable
 

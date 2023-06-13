@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# User represents a user in the application
 class User < ApplicationRecord
   validates :name, presence: true
 

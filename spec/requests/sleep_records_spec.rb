@@ -15,8 +15,10 @@ RSpec.describe 'Sleep Records API', type: :request do
 
         expect(response).to have_http_status(:created)
         parsed_response = JSON.parse(response.body)
-        expect(Time.parse(parsed_response['start_time']).strftime('%Y-%m-%dT%H:%M:%SZ')).to eq(sleep_record_params[:start_time].iso8601)
-        expect(Time.parse(parsed_response['end_time']).strftime('%Y-%m-%dT%H:%M:%SZ')).to eq(sleep_record_params[:end_time].iso8601)
+        expect(Time.parse(parsed_response['start_time']).strftime('%Y-%m-%dT%H:%M:%SZ'))
+          .to eq(sleep_record_params[:start_time].iso8601)
+        expect(Time.parse(parsed_response['end_time']).strftime('%Y-%m-%dT%H:%M:%SZ'))
+          .to eq(sleep_record_params[:end_time].iso8601)
         expect(SleepRecord.count).to eq(1)
       end
     end
