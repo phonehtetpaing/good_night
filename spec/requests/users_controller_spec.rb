@@ -78,4 +78,53 @@ RSpec.describe UsersController, type: :request do
       end
     end
   end
+
+  describe 'GET /users/:id/followed_sleep_records' do
+    let!(:user) { create(:user) }
+    let(:jwt_token) { JWT.encode({ user_id: user.id }, 'secret_key', 'HS256') }
+    let!(:followed_user1) { create(:user) }
+    let!(:followed_user2) { create(:user) }
+    let!(:sleep_record1) { create(:sleep_record, user: followed_user1, start_time: 1.week.ago, end_time: 1.week.ago + 8.hours) }
+    let!(:sleep_record2) { create(:sleep_record, user: followed_user2, start_time: 1.week.ago, end_time: 1.week.ago + 6.hours) }
+  
+    before { user.follow(followed_user1) }
+    before { user.follow(followed_user2) }
+  
+    context 'when the user has no followed users' do
+      before { user.unfollow(followed_user1) }
+      before { user.unfollow(followed_user2) }
+      
+      it 'returns an empty array' do
+        get "/users/#{user.id}/followed_sleep_records", headers: { 'Authorization' => "Bearer #{jwt_token}" }
+  
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to eq('[]')
+      end
+    end
+  
+    context 'when the user does not exist' do
+      it 'returns an error' do
+        get '/users/999/followed_sleep_records', headers: { 'Authorization' => "Bearer #{jwt_token}" }
+  
+        expect(response).to have_http_status(:not_found)
+        expect(response.parsed_body['error']).to eq('User not found')
+      end
+    end
+  
+    context 'when the request is valid' do
+      it 'returns the sleep records of followed users from the previous week sorted by start_time' do
+        get "/users/#{user.id}/followed_sleep_records", headers: { 'Authorization' => "Bearer #{jwt_token}" }
+  
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body.length).to eq(2)
+  
+        sleep_record_ids = response.parsed_body.pluck('id')
+        expect(sleep_record_ids).to include(sleep_record1.id, sleep_record2.id)
+  
+        start_times = response.parsed_body.pluck('start_time')
+        expected_start_times = [sleep_record1.start_time.iso8601, sleep_record2.start_time.iso8601]
+        expect(start_times.map { |t| Time.parse(t).strftime('%Y-%m-%dT%H:%M:%SZ') }).to eq(expected_start_times)
+      end
+    end
+  end  
 end
