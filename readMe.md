@@ -13,7 +13,7 @@ The Good Night App is a sleep tracking application that allows users to track th
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/phonehtetpaing/good_night.git
+   git clone git@github.com:phonehtetpaing/good_night.git
    ```
 
 2. Install dependencies:
