@@ -14,10 +14,10 @@ RSpec.describe 'Sleep Records API', type: :request do
                                         headers: { 'Authorization' => "Bearer #{jwt_token}" }
 
         expect(response).to have_http_status(:created)
-        parsed_response = JSON.parse(response.body)
-        expect(Time.parse(parsed_response['start_time']).strftime('%Y-%m-%dT%H:%M:%SZ'))
+        parsed_response = JSON.parse(response.body)['data']
+        expect(Time.parse(parsed_response['attributes']['start_time']).iso8601)
           .to eq(sleep_record_params[:start_time].iso8601)
-        expect(Time.parse(parsed_response['end_time']).strftime('%Y-%m-%dT%H:%M:%SZ'))
+        expect(Time.parse(parsed_response['attributes']['end_time']).iso8601)
           .to eq(sleep_record_params[:end_time].iso8601)
         expect(SleepRecord.count).to eq(1)
       end
@@ -49,10 +49,10 @@ RSpec.describe 'Sleep Records API', type: :request do
       get '/sleep_records', headers: { 'Authorization' => "Bearer #{jwt_token}" }
 
       expect(response).to have_http_status(:ok)
-      parsed_response = JSON.parse(response.body)
+      parsed_response = JSON.parse(response.body)['data']
       expect(parsed_response.length).to eq(2)
-      expect(parsed_response[0]['id']).to eq(sleep_record1.id)
-      expect(parsed_response[1]['id']).to eq(sleep_record2.id)
+      expect(parsed_response[0]['id']).to eq(sleep_record1.id.to_s)
+      expect(parsed_response[1]['id']).to eq(sleep_record2.id.to_s)
     end
   end
 end

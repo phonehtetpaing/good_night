@@ -102,9 +102,9 @@ RSpec.describe UsersController, type: :request do
 
       it 'returns an empty array' do
         get "/users/#{user.id}/followed_sleep_records", headers: { 'Authorization' => "Bearer #{jwt_token}" }
-
+      
         expect(response).to have_http_status(:ok)
-        expect(response.body).to eq('[]')
+        expect(JSON.parse(response.body)).to eq({ "data" => [] })
       end
     end
 
@@ -120,17 +120,21 @@ RSpec.describe UsersController, type: :request do
     context 'when the request is valid' do
       it 'returns the sleep records of followed users from the previous week sorted by start_time' do
         get "/users/#{user.id}/followed_sleep_records", headers: { 'Authorization' => "Bearer #{jwt_token}" }
-
+    
         expect(response).to have_http_status(:ok)
-        expect(response.parsed_body.length).to eq(2)
-
-        sleep_record_ids = response.parsed_body.pluck('id')
-        expect(sleep_record_ids).to include(sleep_record1.id, sleep_record2.id)
-
-        start_times = response.parsed_body.pluck('start_time')
+    
+        parsed_response = JSON.parse(response.body)
+        sleep_records = parsed_response['data']
+    
+        expect(sleep_records.length).to eq(2)
+    
+        sleep_record_ids = sleep_records.map { |record| record['id'] }
+        expect(sleep_record_ids).to include(sleep_record1.id.to_s, sleep_record2.id.to_s)
+    
+        start_times = sleep_records.map { |record| record['attributes']['start_time'] }
         expected_start_times = [sleep_record1.start_time.iso8601, sleep_record2.start_time.iso8601]
         expect(start_times.map { |t| Time.parse(t).strftime('%Y-%m-%dT%H:%M:%SZ') }).to eq(expected_start_times)
       end
-    end
+    end    
   end
 end

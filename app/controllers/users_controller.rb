@@ -29,14 +29,19 @@ class UsersController < ApplicationController
 
   def followed_sleep_records
     user = User.find_by(id: params[:id])
-    if user.nil?
-      render json: { error: 'User not found' }, status: :not_found
-    else
-      followed_users = user.following_users
-      sleep_records = SleepRecord.where(user: followed_users)
-                                 .sort_by { |record| record.end_time - record.start_time }
-                                 .reverse
-      render json: sleep_records, status: :ok
-    end
+
+    return render json: { error: 'User not found' }, status: :not_found if user.nil?
+
+    followed_users = user.following_users
+    sleep_records = SleepRecord.where(user: followed_users)
+                               .sort_by { |record| record.end_time - record.start_time }
+                               .reverse
+    render json: serialize_sleep_records(sleep_records), status: :ok
+  end
+
+  private
+
+  def serialize_sleep_records(records)
+    SleepRecordSerializer.new(records).serializable_hash.to_json
   end
 end
